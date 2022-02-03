@@ -82,7 +82,9 @@
     password: "{{ grf_password }}"
     method: POST
     force_basic_auth: yes
-    status_code: 200
+    status_code: 
+      - 200
+      - 409
     body_format: json
     body: '{ "loginOrEmail":"{{ user_email }}", "role":"{{ user_role }}"}'
   when: org.status == 200 and user.status == 200

@@ -1,5 +1,5 @@
 
-- name: Listando usuários
+- name: Extendendo as permissões para usuários Flowti
   uri:
     url: "{{ grf_server_host }}/api/orgs/{{ item.id }}/users"
     headers:
