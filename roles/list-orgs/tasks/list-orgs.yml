@@ -1,0 +1,19 @@
+- name: Listando Organizações
+  uri:
+    url: "{{ grf_server_host }}/api/orgs"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: GET
+    force_basic_auth: yes
+    status_code:
+      - 200
+    body_format: json
+  register: response
+
+- name: Criando variável com lista de orgs
+  local_action:
+    module: set_fact
+    organizations: "{{ response.json | list }}"
+    cacheable: yes

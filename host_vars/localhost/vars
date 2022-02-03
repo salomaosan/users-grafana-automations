@@ -1,0 +1,10 @@
+# Ambiente de teste
+grf_server_host: "http://192.168.9.13:3000"
+grf_username: "admin"
+grf_password: "{{ vault_grf_password }}"
+
+# Ambiente de produção
+# grf_server_host: "https://xcnj.myz.cloud/grafana"
+# grf_username: "admin"
+# grf_password: "{{ vault_grf_password }}"
+

@@ -1,0 +1,14 @@
+- hosts: local
+  roles:
+  - { role: list-orgs, tags: ["list-orgs-role"] }
+  - { role: associate-user-to-orgs, tags: ["associate-user-to-orgs-role"] } 
+  - { role: create-user, tags: ["create-user-role"] }
+
+
+
+#--extra-vars "org_name=common"
+
+#ansible-playbook -i hosts main.yml \
+#--extra-vars "user_email=teste@flowti.com.br" \
+#--extra-vars "org_name='q00047-gn-Hospital Alemao Oswaldo Cruz'" \
+#--extra-vars="user_role=Admin"

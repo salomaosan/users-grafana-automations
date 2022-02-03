@@ -1,0 +1,110 @@
+---
+## Verificando se a organização passada existe no Grafana
+- name: Verificando a exitencia da Org. "{{ org_name | title }}""
+  uri:
+    url: "{{ grf_server_host }}/api/orgs/name/{{ org_name | urlencode}}"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: GET
+    force_basic_auth: yes
+    status_code: 
+      - 200
+      - 404
+    body_format: json
+  ignore_errors: yes
+  register: org
+
+- debug:
+    var: org.json
+  when: org.status == 404
+
+## Verificando a exitencia do Usuário no grafana
+- name: Verificando a exitencia do Usuário
+  uri:
+    url: "{{ grf_server_host }}/api/users/lookup?loginOrEmail={{ user_email }}"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: GET
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 404
+    body_format: json
+  when: org.status == 200
+  ignore_errors: yes
+  register: user
+
+- debug:
+    var: user.json
+  when: user.status == 200
+
+- set_fact:
+    user_id: "{{ user.json.id }}"
+  when: user.status == 200
+
+## Realizando a criação do usuário no grafana se ele não existe
+- name: Criando usuário
+  uri:
+    url: "{{ grf_server_host }}/api/admin/users"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: POST
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 412
+    body_format: json
+    body: '{"name": "{{ user_email }}", "email": "{{ user_email }}",  "login": "{{ user_email }}", "password": "{{ user_email }}", "OrgId": {{ org.json.id }} }'
+  when: org.status == 200 and user.status == 404
+  register: user_create
+
+- debug:
+    var: user_create.json
+  when: org.status == 200 and user.status == 404
+
+- set_fact:
+    user_id: "{{ user_create.json.id }}"
+  when: org.status == 200 and user.status == 404
+
+## Associando o Usuário a Org
+- name: Associando o Usuário a Org
+  uri:
+    url: "{{ grf_server_host }}/api/orgs/{{ org.json.id }}/users"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: POST
+    force_basic_auth: yes
+    status_code: 200
+    body_format: json
+    body: '{ "loginOrEmail":"{{ user_email }}", "role":"{{ user_role }}"}'
+  when: org.status == 200 and user.status == 200
+
+## Aplicando as permissões
+- name: Aplicando as permissões
+  uri:
+    url: "{{ grf_server_host }}/api/orgs/{{ org.json.id }}/users/{{ user_id }}"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: PATCH
+    force_basic_auth: yes
+    status_code: 200
+    body_format: json
+    body: '{"role":"{{ user_role }}"}'
+  when: org.status == 200 and (user.status == 200 or user_create.status == 200)
+  register: user_update
+
+- debug:
+    var: user_update.json
+  when: org.status == 200 and user.status == 404
+
+...

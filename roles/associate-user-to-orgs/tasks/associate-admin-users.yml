@@ -1,0 +1,19 @@
+
+- name: Listando usuários
+  uri:
+    url: "{{ grf_server_host }}/api/orgs/{{ item.id }}/users"
+    headers:
+      Content-Type: "application/json"
+    user: "{{ grf_username }}"
+    password: "{{ grf_password }}"
+    method: POST
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 409
+    body_format: json
+    body: '{"loginOrEmail": "{{ user_email }}", "role": "{{ user_role }}"}'
+  loop: "{{ organizations }}"
+  when: item.id not in [48,35,1,81] and user_email|lower is search("flowti.com.br")
+  
+  #register: create_status
