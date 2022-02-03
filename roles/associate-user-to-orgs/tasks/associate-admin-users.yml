@@ -14,6 +14,6 @@
     body_format: json
     body: '{"loginOrEmail": "{{ user_email }}", "role": "{{ user_role }}"}'
   loop: "{{ organizations }}"
-  when: item.id not in [48,35,1,81] and user_email|lower is search("flowti.com.br")
+  when: item.id not in [48,1,81] and user_email|lower is search("flowti.com.br")
   
   #register: create_status
