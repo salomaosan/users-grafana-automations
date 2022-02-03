@@ -20,7 +20,10 @@ pipeline {
                 sh ('ansible-playbook -i hosts main.yml --tags "create-user-role" --vault-password-file .vault_key --extra-vars "user_email=\'${EMAIL}\'" --extra-vars "org_name=\'${ORGANIZATION}\'" --extra-vars="user_role=\'${ROLE}\'"')
             }
         }
-        stage('Create Datasource Zabbix') {
+        stage('Extent User Flowti') {
+            when { 
+                environment name: 'ORGANIZATION', value: 'Flowti' 
+            }
             steps{
                 sh ('ansible-playbook -i hosts main.yml --tags "associate-user-to-orgs" --vault-password-file .vault_key --extra-vars "user_email=\'${EMAIL}\'" --extra-vars="user_role=\'${ROLE}\'"')
             }
