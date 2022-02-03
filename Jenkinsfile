@@ -10,7 +10,7 @@ pipeline {
     }
     parameters {
         string (name: 'EMAIL', defaultValue: '', description: 'Informe o email do usuário.')
-        string (name: 'ROLE', choices: ['Viewer', 'Admin'], description: 'Informe o nome da Organização que será criada.')
+        choice (name: 'ROLE', choices: ['Viewer', 'Admin'], description: 'Informe o nome da Organização que será criada.')
         string (name: 'ORGANIZATION', defaultValue: '', description: 'Informe o nome da Organização que o usuário terá acesso.')
     }
     stages {
