@@ -26,7 +26,7 @@ pipeline {
                 environment name: 'ORGANIZATION', value: 'Flowti' 
             }
             steps{
-                sh ('ansible-playbook -i hosts main.yml --tags "associate-user-to-orgs-role" --vault-password-file .vault_key --extra-vars "user_email=\'${EMAIL}\'" --extra-vars="user_role=\'${ROLE}\'" --extra-vars=$GRAFANA_USR --extra-vars="grf_password=$GRAFANA_PSW"')
+                sh ('ansible-playbook -i hosts main.yml --tags "associate-user-to-orgs-role" --vault-password-file .vault_key --extra-vars "user_email=\'${EMAIL}\'" --extra-vars="user_role=\'${ROLE}\'" --extra-vars=$GRAFANA_USR --extra-vars="grf_password=$GRAFANA_PSW" --extra-vars=$GRAFANA_USR --extra-vars="grf_password=$GRAFANA_PSW"')
             }
         }
     }
